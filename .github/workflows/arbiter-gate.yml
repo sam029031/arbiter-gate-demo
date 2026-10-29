@@ -1,0 +1,34 @@
+# ARBITER Gate on every pull request of this repository.
+#
+# The job "ARBITER Gate" is a required status check of main. It runs on a self-hosted
+# runner (label arbiter-gate) registered to this repository only. Every PR starts the
+# workflow; the audit runs only when the PR changed a .sol file (a required check whose
+# workflow never starts would leave other PRs waiting forever).
+#
+# `pull_request`, never `pull_request_target`. PRs from forks are refused by the action
+# (exit 2, "無法判定") before anything is checked out, and Settings > Actions requires
+# approval before any outside contributor's PR runs at all. The action is loaded from
+# main of this repository, not from the PR's checkout.
+name: ARBITER Gate
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  security-events: write
+  actions: read
+
+concurrency:
+  group: arbiter-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    name: ARBITER Gate
+    runs-on: [self-hosted, arbiter-gate]
+    timeout-minutes: 45
+    steps:
+      - uses: sam029031/arbiter-gate-demo/.github/actions/arbiter-gate@main
