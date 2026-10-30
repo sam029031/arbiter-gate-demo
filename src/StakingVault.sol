@@ -29,9 +29,11 @@ contract StakingVault {
         uint256 amount = stakeOf[msg.sender];
         require(amount > 0, "no position");
         require(block.timestamp >= stakedAt[msg.sender] + lockPeriod, "still locked");
+        // Effects: update internal accounting before external call to prevent re‑entrancy
         totalStaked -= amount;
         stakeOf[msg.sender] = 0;
         stakedAt[msg.sender] = 0;
+        // Interaction: transfer ETH after state has been settled
         (bool ok, ) = msg.sender.call{value: amount}("");
         require(ok, "eth transfer failed");
         emit Unstaked(msg.sender, amount);
