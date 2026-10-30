@@ -44,7 +44,4 @@ contract StakingVault {
         return (address(this).balance * 1e18) / totalStaked;
     }
 
-    function positionOf(address user) external view returns (uint256 amount, uint256 since) {
-        return (stakeOf[user], stakedAt[user]);
-    }
 }
