@@ -56,6 +56,10 @@ runs:
     - name: Check out the PR head
       if: steps.who.outputs.mode == 'audit'
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      env:
+        # checkout copies $HOME/.gitconfig and prints that path; the runner user's home
+        # is a path of this host, so this step gets an empty one under the job's temp dir
+        HOME: ${{ runner.temp }}/arbiter-gate-home
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
