@@ -6,6 +6,7 @@ contract StakingVault {
     mapping(address => uint256) public stakedAt;
     uint256 public totalStaked;
     uint256 public lockPeriod;
+    uint256 public constant VERSION = 2;
 
     event Staked(address indexed user, uint256 amount);
     event Unstaked(address indexed user, uint256 amount);
